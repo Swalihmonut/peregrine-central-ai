@@ -1,0 +1,708 @@
+{
+  "metadata": {
+    "version": "1.0.0 (Beta V-001)",
+    "mission": "Central API, Hosting & Infrastructure QA",
+    "timestamp": "2026-10-31T02:51:29Z",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python_version": "3.11.18",
+    "total_execution_time_seconds": 3.579
+  },
+  "executive_summary": {
+    "total_tests": 53,
+    "passed": 53,
+    "failed": 0,
+    "success_rate_percent": 100.0,
+    "all_suites_passed": true,
+    "cloud_readiness_status": "AUTOMATED_STAGING_VERIFIED_CLOUD_DEPLOYMENT_PENDING",
+    "cloud_readiness_mandate_notice": "In strict accordance with the mission protocol, cloud readiness cannot be claimed until the actual remote cloud-hosted instance has been provisioned and tested."
+  },
+  "staging_smoke_test_summary": {
+    "timestamp": "2026-10-31T02:51:29Z",
+    "base_url": "http://127.0.0.1:9035",
+    "passed": true,
+    "total_gates": 7,
+    "passed_gates": 7,
+    "failed_gates": 0,
+    "gates": [
+      {
+        "gate": "Gate 1: Infrastructure Health & Liveness",
+        "passed": true,
+        "details": {
+          "status_code": 200,
+          "version": "0.1.0-beta",
+          "provider": "mock",
+          "latency_ms": 12.44
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 2: Readiness & Host Telemetry",
+        "passed": true,
+        "details": {
+          "status_code": 200,
+          "ready": true,
+          "disk_free_gb": 22.75,
+          "memory_free_pct": 79.0,
+          "sequential_lock_idle": true,
+          "latency_ms": 9.9
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 3: Security & Authentication Enforcement",
+        "passed": true,
+        "details": {
+          "unauthorized_status": 401,
+          "authorized_status": 200,
+          "auth_model": "Bearer Token"
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 4: Domain Prompts (Tutor, Speaking, Exams)",
+        "passed": true,
+        "details": {
+          "tutor_ok": true,
+          "tutor_latency_ms": 1.13,
+          "speaking_ok": true,
+          "speaking_latency_ms": 0.99,
+          "exams_ok": true,
+          "exams_latency_ms": 1.08
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 5: Error Isolation & Safety Interlocks",
+        "passed": true,
+        "details": {
+          "bad_json_status": 400,
+          "bad_json_code": "EMPTY_REQUEST_BODY",
+          "reasoning_isolation_code": "MODEL_REASONING_ONLY"
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 6: Rate Limiting & Concurrency Headers",
+        "passed": true,
+        "details": {
+          "x-ratelimit-limit": "60",
+          "x-ratelimit-remaining": "53",
+          "x-ratelimit-reset": "60.0"
+        },
+        "error": null
+      },
+      {
+        "gate": "Gate 7: Operational Feedback & Consent Boundaries",
+        "passed": true,
+        "details": {
+          "status_code": 202,
+          "feedback_id": "fb-7c40de659497",
+          "consent_recorded": false,
+          "eligible_for_learning": false,
+          "latency_ms": 1.6
+        },
+        "error": null
+      }
+    ]
+  },
+  "health_check_probe_summary": {
+    "timestamp": "2026-10-31T02:51:29Z",
+    "base_url": "http://127.0.0.1:9035",
+    "healthy": true,
+    "status": "HEALTHY",
+    "probes": {
+      "health": {
+        "status_code": 200,
+        "latency_ms": 7.71,
+        "passed": true,
+        "error": null,
+        "data": {
+          "status": "ok",
+          "version": "0.1.0-beta",
+          "active_provider": "mock",
+          "active_model": "qwen3:4b-staging",
+          "timestamp": "2026-10-31T02:51:29.080317+00:00"
+        }
+      },
+      "ready": {
+        "status_code": 200,
+        "latency_ms": 8.66,
+        "passed": true,
+        "error": null,
+        "data": {
+          "ready": true,
+          "active_provider": "mock",
+          "active_model": "qwen3:4b-staging",
+          "provider_status": "ready",
+          "disk_free_gb": 22.75,
+          "memory_free_pct": 79.0,
+          "sequential_lock_idle": true,
+          "timestamp": "2026-10-31T02:51:29.089237+00:00"
+        }
+      },
+      "inference_ping": {
+        "status_code": 200,
+        "latency_ms": 1.52,
+        "passed": true,
+        "error": null,
+        "data": {
+          "model": "qwen3:4b-staging",
+          "provider": "mock",
+          "finish_reason": "stop"
+        }
+      }
+    }
+  },
+  "category_breakdown": {
+    "1_health_and_readiness": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 678.44,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_01_health_endpoint_contract",
+          "name": "test_01_health_endpoint_contract",
+          "description": "GET /health must return status ok, version, active provider and model.",
+          "status": "PASS",
+          "duration_ms": 11.91,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_02_readiness_endpoint_contract",
+          "name": "test_02_readiness_endpoint_contract",
+          "description": "GET /ready must report readiness, disk storage, and lock availability.",
+          "status": "PASS",
+          "duration_ms": 5.71,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_03_readiness_failure_on_disk_breach",
+          "name": "test_03_readiness_failure_on_disk_breach",
+          "description": "GET /ready must return 503 if disk space is below safety threshold.",
+          "status": "PASS",
+          "duration_ms": 660.82,
+          "error": null
+        }
+      ]
+    },
+    "2_authentication_and_authorization": {
+      "total_tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 29.58,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_04_auth_enforcement_missing_token",
+          "name": "test_04_auth_enforcement_missing_token",
+          "description": "Protected endpoints must return 401 UNAUTHORIZED when no token is supplied.",
+          "status": "PASS",
+          "duration_ms": 4.1,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_05_auth_enforcement_invalid_token",
+          "name": "test_05_auth_enforcement_invalid_token",
+          "description": "Protected endpoints must return 401 UNAUTHORIZED when token is incorrect.",
+          "status": "PASS",
+          "duration_ms": 2.29,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_06_auth_enforcement_valid_token",
+          "name": "test_06_auth_enforcement_valid_token",
+          "description": "Protected endpoints must return 200 OK when correct Bearer token is provided.",
+          "status": "PASS",
+          "duration_ms": 3.05,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_07_public_probes_unaffected_by_auth",
+          "name": "test_07_public_probes_unaffected_by_auth",
+          "description": "GET /health and GET /ready must remain open for container orchestrator probes.",
+          "status": "PASS",
+          "duration_ms": 20.14,
+          "error": null
+        }
+      ]
+    },
+    "3_valid_and_invalid_requests": {
+      "total_tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 9.03,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_08_valid_request_chat_endpoint",
+          "name": "test_08_valid_request_chat_endpoint",
+          "description": "Valid chat payload must return 200 and standard response structure.",
+          "status": "PASS",
+          "duration_ms": 2.55,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_09_invalid_json_payload",
+          "name": "test_09_invalid_json_payload",
+          "description": "Malformed JSON must return 400 INVALID_JSON.",
+          "status": "PASS",
+          "duration_ms": 1.57,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_10_empty_request_body",
+          "name": "test_10_empty_request_body",
+          "description": "Empty POST body must return 400 EMPTY_REQUEST_BODY.",
+          "status": "PASS",
+          "duration_ms": 1.24,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_11_schema_validation_out_of_range_parameter",
+          "name": "test_11_schema_validation_out_of_range_parameter",
+          "description": "Out-of-range parameters (e.g. temperature > 2.0) must return 422 SCHEMA_VALIDATION_ERROR.",
+          "status": "PASS",
+          "duration_ms": 2.46,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_12_non_existent_endpoint",
+          "name": "test_12_non_existent_endpoint",
+          "description": "Non-existent endpoints must return 404 ENDPOINT_NOT_FOUND.",
+          "status": "PASS",
+          "duration_ms": 1.21,
+          "error": null
+        }
+      ]
+    },
+    "4_arabic_and_english_handling": {
+      "total_tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 5.46,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_13_arabic_msa_with_tashkeel_handling",
+          "name": "test_13_arabic_msa_with_tashkeel_handling",
+          "description": "Arabic text with full diacritics (tashkeel) must be processed without corruption.",
+          "status": "PASS",
+          "duration_ms": 1.57,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_14_arabic_dialect_handling",
+          "name": "test_14_arabic_dialect_handling",
+          "description": "Speaking Partner must handle Arabic dialects (e.g. Emirati) appropriately.",
+          "status": "PASS",
+          "duration_ms": 1.35,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_15_english_request_handling",
+          "name": "test_15_english_request_handling",
+          "description": "System must handle pure English linguistic queries cleanly.",
+          "status": "PASS",
+          "duration_ms": 1.22,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_16_code_switching_bilingual_query",
+          "name": "test_16_code_switching_bilingual_query",
+          "description": "System must handle code-switching between Arabic and English.",
+          "status": "PASS",
+          "duration_ms": 1.32,
+          "error": null
+        }
+      ]
+    },
+    "5_conversation_history": {
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 2.48,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_17_multi_turn_chat_history",
+          "name": "test_17_multi_turn_chat_history",
+          "description": "Multi-turn messages array must preserve sequential dialogue history.",
+          "status": "PASS",
+          "duration_ms": 1.28,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_18_speaking_dialogue_history",
+          "name": "test_18_speaking_dialogue_history",
+          "description": "Speaking partner must accept dialogue_history turns alongside current utterance.",
+          "status": "PASS",
+          "duration_ms": 1.2,
+          "error": null
+        }
+      ]
+    },
+    "6_model_timeout_and_unavailable_provider": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 2.55,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_19_model_timeout_handling",
+          "name": "test_19_model_timeout_handling",
+          "description": "Simulated model timeout must return 500 status and MODEL_TIMEOUT error envelope.",
+          "status": "PASS",
+          "duration_ms": 1.2,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_20_unavailable_provider_handling",
+          "name": "test_20_unavailable_provider_handling",
+          "description": "Simulated unavailable provider must return 500 status and PROVIDER_UNAVAILABLE code.",
+          "status": "PASS",
+          "duration_ms": 1.19,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_21_hosted_adapter_unconfigured_error",
+          "name": "test_21_hosted_adapter_unconfigured_error",
+          "description": "Hosted adapter without endpoint or API key must report configuration error.",
+          "status": "PASS",
+          "duration_ms": 0.16,
+          "error": null
+        }
+      ]
+    },
+    "7_empty_model_responses": {
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 2.24,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_22_empty_model_response_interception",
+          "name": "test_22_empty_model_response_interception",
+          "description": "Provider returning empty content string must be caught as EMPTY_MODEL_RESPONSE error.",
+          "status": "PASS",
+          "duration_ms": 1.14,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_23_reasoning_only_empty_content_isolation",
+          "name": "test_23_reasoning_only_empty_content_isolation",
+          "description": "Model producing only chain-of-thought without answer must return MODEL_REASONING_ONLY.",
+          "status": "PASS",
+          "duration_ms": 1.1,
+          "error": null
+        }
+      ]
+    },
+    "8_rate_limits_and_concurrency": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 687.37,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_24_rate_limit_headers_presence",
+          "name": "test_24_rate_limit_headers_presence",
+          "description": "Responses must include standard X-RateLimit headers.",
+          "status": "PASS",
+          "duration_ms": 1.09,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_25_rate_limit_exhaustion_429",
+          "name": "test_25_rate_limit_exhaustion_429",
+          "description": "Exceeding requests per minute must trigger 429 Too Many Requests.",
+          "status": "PASS",
+          "duration_ms": 666.43,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_26_multi_threaded_concurrency_safety",
+          "name": "test_26_multi_threaded_concurrency_safety",
+          "description": "Concurrent requests must execute safely without race conditions or memory corruption.",
+          "status": "PASS",
+          "duration_ms": 19.85,
+          "error": null
+        }
+      ]
+    },
+    "9_usage_tracking": {
+      "total_tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 2.16,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_27_token_usage_and_telemetry_metrics",
+          "name": "test_27_token_usage_and_telemetry_metrics",
+          "description": "Successful responses must report prompt, completion, total tokens and latency.",
+          "status": "PASS",
+          "duration_ms": 2.16,
+          "error": null
+        }
+      ]
+    },
+    "10_feedback_submission": {
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 5.33,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_28_feedback_submission_valid",
+          "name": "test_28_feedback_submission_valid",
+          "description": "POST /api/v1/feedback must accept valid evaluations and return 202 ACCEPTED.",
+          "status": "PASS",
+          "duration_ms": 3.34,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_29_feedback_submission_invalid_rating",
+          "name": "test_29_feedback_submission_invalid_rating",
+          "description": "Feedback with rating out of range (>5) must return 422 SCHEMA_VALIDATION_ERROR.",
+          "status": "PASS",
+          "duration_ms": 1.99,
+          "error": null
+        }
+      ]
+    },
+    "11_consent_enforcement": {
+      "total_tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 1.85,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_30_consent_gate_operational_vs_learning_queue",
+          "name": "test_30_consent_gate_operational_vs_learning_queue",
+          "description": "Non-consented feedback must NEVER be stored in the continuous learning queue.",
+          "status": "PASS",
+          "duration_ms": 1.77,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_31_pii_sanitization_patterns",
+          "name": "test_31_pii_sanitization_patterns",
+          "description": "Privacy middleware must redact international emails, GCC phones, and national IDs.",
+          "status": "PASS",
+          "duration_ms": 0.06,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_32_user_id_anonymization_determinism",
+          "name": "test_32_user_id_anonymization_determinism",
+          "description": "User identifiers must be hashed deterministically using SHA-256.",
+          "status": "PASS",
+          "duration_ms": 0.02,
+          "error": null
+        }
+      ]
+    },
+    "12_provider_fallback": {
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 0.4,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_33_provider_fallback_on_primary_failure",
+          "name": "test_33_provider_fallback_on_primary_failure",
+          "description": "When primary provider fails, manager must seamlessly fall back to secondary provider.",
+          "status": "PASS",
+          "duration_ms": 0.33,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_34_provider_no_fallback_when_unconfigured",
+          "name": "test_34_provider_no_fallback_when_unconfigured",
+          "description": "When fallback provider is not configured, primary error must be returned.",
+          "status": "PASS",
+          "duration_ms": 0.07,
+          "error": null
+        }
+      ]
+    },
+    "13_cloud_environment_configuration": {
+      "total_tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 0.5,
+      "tests": [
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_35_cloud_environment_variable_loading",
+          "name": "test_35_cloud_environment_variable_loading",
+          "description": "APIConfig must correctly load and typecast cloud environment variables.",
+          "status": "PASS",
+          "duration_ms": 0.1,
+          "error": null
+        },
+        {
+          "test_id": "tests.test_qa_suite.TestBetaV001CentralAPIQA.test_36_dockerfile_and_container_configuration",
+          "name": "test_36_dockerfile_and_container_configuration",
+          "description": "Verify Dockerfile exists, uses python 3.11, exposes standard port, and configures HEALTHCHECK.",
+          "status": "PASS",
+          "duration_ms": 0.4,
+          "error": null
+        }
+      ]
+    },
+    "integration_regression_suite": {
+      "total_tests": 17,
+      "passed": 17,
+      "failed": 0,
+      "status": "PASS",
+      "total_duration_ms": 43.88,
+      "tests": [
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_01_health_endpoint",
+          "name": "test_01_health_endpoint",
+          "description": "Test GET /health returns standard health payload.",
+          "status": "PASS",
+          "duration_ms": 14.71,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_02_ready_endpoint",
+          "name": "test_02_ready_endpoint",
+          "description": "Test GET /ready returns readiness and disk telemetry.",
+          "status": "PASS",
+          "duration_ms": 10.31,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_03_chat_endpoint",
+          "name": "test_03_chat_endpoint",
+          "description": "Test POST /api/v1/chat returns standard CentralAPIResponse.",
+          "status": "PASS",
+          "duration_ms": 2.09,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_04_tutor_explain_endpoint",
+          "name": "test_04_tutor_explain_endpoint",
+          "description": "Test POST /api/v1/tutor/explain returns structured grammar explanation.",
+          "status": "PASS",
+          "duration_ms": 1.63,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_05_speaking_respond_endpoint",
+          "name": "test_05_speaking_respond_endpoint",
+          "description": "Test POST /api/v1/speaking/respond returns conversational turn.",
+          "status": "PASS",
+          "duration_ms": 1.53,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_06_exams_explain_endpoint",
+          "name": "test_06_exams_explain_endpoint",
+          "description": "Test POST /api/v1/exams/explain analyzes question and options.",
+          "status": "PASS",
+          "duration_ms": 1.46,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_07_thinking_isolation_safety_rule",
+          "name": "test_07_thinking_isolation_safety_rule",
+          "description": "Beta Safety Rule: If model only emits reasoning, content must be None and error returned.",
+          "status": "PASS",
+          "duration_ms": 1.31,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_08_invalid_json_handling",
+          "name": "test_08_invalid_json_handling",
+          "description": "Test POST with malformed JSON returns 400 INVALID_JSON.",
+          "status": "PASS",
+          "duration_ms": 1.25,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_09_schema_validation_error",
+          "name": "test_09_schema_validation_error",
+          "description": "Test POST with missing required field returns 422 SCHEMA_VALIDATION_ERROR.",
+          "status": "PASS",
+          "duration_ms": 1.25,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_10_endpoint_not_found",
+          "name": "test_10_endpoint_not_found",
+          "description": "Test non-existent path returns 404 ENDPOINT_NOT_FOUND.",
+          "status": "PASS",
+          "duration_ms": 1.28,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_11_request_id_propagation",
+          "name": "test_11_request_id_propagation",
+          "description": "Test that custom X-Request-ID header is propagated into response.",
+          "status": "PASS",
+          "duration_ms": 1.27,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_12_feedback_with_consent",
+          "name": "test_12_feedback_with_consent",
+          "description": "Test POST /api/v1/feedback when consent is granted.",
+          "status": "PASS",
+          "duration_ms": 1.94,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_13_feedback_without_consent",
+          "name": "test_13_feedback_without_consent",
+          "description": "Test POST /api/v1/feedback when consent is denied (must exclude from training).",
+          "status": "PASS",
+          "duration_ms": 1.27,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_14_pii_sanitization",
+          "name": "test_14_pii_sanitization",
+          "description": "Test sensitive data filtering (emails, phones, national IDs) in privacy middleware.",
+          "status": "PASS",
+          "duration_ms": 0.06,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_15_continuous_learning_worker_cycle",
+          "name": "test_15_continuous_learning_worker_cycle",
+          "description": "Test background worker aggregates eligible feedback into candidate dataset.",
+          "status": "PASS",
+          "duration_ms": 1.34,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_16_rate_limiter_headers",
+          "name": "test_16_rate_limiter_headers",
+          "description": "Test that rate limiting headers are returned on valid requests.",
+          "status": "PASS",
+          "duration_ms": 1.14,
+          "error": null
+        },
+        {
+          "test_id": "central_runtime_api.test_api.TestCentralAIRuntime.test_17_rate_limiter_rejection",
+          "name": "test_17_rate_limiter_rejection",
+          "description": "Test that exceeding RPM returns HTTP 429 Too Many Requests.",
+          "status": "PASS",
+          "duration_ms": 0.04,
+          "error": null
+        }
+      ]
+    }
+  }
+}

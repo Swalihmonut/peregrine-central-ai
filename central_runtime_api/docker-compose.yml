@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  central-ai-api:
+    build:
+      context: ..
+      dockerfile: central_runtime_api/Dockerfile
+    container_name: peregrine-central-ai-api
+    ports:
+      - "8000:8000"
+    environment:
+      - CENTRAL_AI_HOST=0.0.0.0
+      - CENTRAL_AI_PORT=8000
+      - CENTRAL_AI_ENV=staging
+      - CENTRAL_AI_PROVIDER=mock
+      - CENTRAL_AI_MODEL=qwen3:4b
+      - CENTRAL_AI_RATE_LIMIT_RPM=60
+      - CENTRAL_AI_MAX_CONCURRENCY=10
+      - CENTRAL_AI_DATA_DIR=/app/data
+      - CENTRAL_AI_CORS_ORIGINS=https://ai.peregrineacademy.in,http://localhost:3000,http://localhost:3005
+      - CENTRAL_AI_MAX_BODY_BYTES=2097152
+      - CENTRAL_AI_WORKER_AUTO_START=true
+      - CENTRAL_AI_WORKER_INTERVAL=300
+    volumes:
+      - central-ai-data:/app/data
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    restart: unless-stopped
+
+volumes:
+  central-ai-data:
+    name: peregrine_central_ai_data

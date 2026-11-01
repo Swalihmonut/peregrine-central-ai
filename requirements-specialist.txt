@@ -1,0 +1,10 @@
+# Optional / Specialist Arabic NLP Toolchain Dependencies
+# Note: Core Central AI Runtime runs with zero external NLP dependencies (see requirements.txt).
+# These packages are used by specialist_tools/ for local prosody, diacritization, and morphological verification.
+
+pyarabic>=0.6.15
+qalsadi>=0.4.7
+libqutrub>=1.2.4
+mishkal>=0.4.1
+tashaphyne>=0.3.4.1
+camel-tools>=1.5.2

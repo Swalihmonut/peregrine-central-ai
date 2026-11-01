@@ -1,0 +1,5 @@
+# Central Arabic AI API dependencies (Pinned to existing verified lab stack)
+pydantic>=2.10.0
+httpx>=0.28.0
+requests>=2.32.0
+uvicorn>=0.30.0
