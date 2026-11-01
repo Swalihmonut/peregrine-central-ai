@@ -1,294 +1,222 @@
-# Peregrine Central AI Runtime & Arabic NLP Core Engine
+# Peregrine Central AI Backend (`peregrine-central-ai`)
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Architecture: ASGI](https://img.shields.io/badge/architecture-ASGI%20%2F%20HTTP-green.svg)]()
-[![Container Ready](https://img.shields.io/badge/container-Docker%20Rootless-orange.svg)]()
-[![Status: Beta V-001](https://img.shields.io/badge/release-Beta%20V--001-purple.svg)]()
-
-Canonical unified AI runtime backend, multi-agent generation (MAG) pipeline, and Arabic linguistic intelligence engine for the **Peregrine Arabic AI** ecosystem.
-
----
-
-## 1. System Architecture Overview
-
-Peregrine Central AI serves as the singular authoritative intelligence gateway powering all Peregrine client surfaces:
-- **Peregrine Arabic Digital Reader & Spoken Arabic Reader**
-- **AI Speaking Partner (Rashid & Maryam — Emirati & Modern Standard Arabic)**
-- **Arabic AI Tutor (Grammar, Morphology, Syntactic Analysis)**
-- **Exams App & LMS Assessment Engine**
-- **Academic Research Assistant**
-
-```
-                     ┌─────────────────────────────────────────────────────────┐
-                     │               Peregrine Client Applications             │
-                     │  (Next.js Web / Mobile Apps / LMS / Exams App / Reader) │
-                     └────────────────────────────┬────────────────────────────┘
-                                                  │ HTTPS / JSON API
-                                                  ▼
-                     ┌─────────────────────────────────────────────────────────┐
-                     │            Peregrine Central AI Runtime Engine          │
-                     │          (High-Performance Python ASGI / Uvicorn)       │
-                     ├─────────────────────────────────────────────────────────┤
-                     │  Middleware:                                            │
-                     │   • Privacy Anonymizer & Consent Stripper               │
-                     │   • Token Bucket / RPM Rate Limiter                     │
-                     │   • Storage Safety Guard (Disk Free Threshold Check)    │
-                     ├─────────────────────────────────────────────────────────┤
-                     │  Service Router & Dispatch:                             │
-                     │   • /api/v1/chat              • /api/v1/speaking/respond│
-                     │   • /api/v1/tutor/explain     • /api/v1/exams/explain   │
-                     │   • /api/v1/feedback          • /health, /ready         │
-                     └───────┬──────────────────┬───────────────────┬──────────┘
-                             │                  │                   │
-             ┌───────────────▼──┐       ┌───────▼──────────┐ ┌──────▼──────────────┐
-             │  Knowledge Core  │       │ Provider Manager │ │ Continuous Learning │
-             │  • Arabic RAG    │       │  & Adapters      │ │ • Feedback Store    │
-             │  • Arabic MAG    │       │  • Hosted (Groq) │ │ • Anonymized Queue  │
-             │  • Vector Store  │       │  • MLX (Jais)    │ │ • Candidate Dataset │
-             │  • Morph/Stemmer │       │  • Ollama (Qwen) │ │   Generator Worker  │
-             └──────────────────┘       │  • Mock Fallback │ └─────────────────────┘
-                                        └──────────────────┘
-```
+**Repository:** `https://github.com/Swalihmonut/peregrine-central-ai`  
+**Target Hostname:** `api.ai.peregrineacademy.in`  
+**Runtime:** Python 3.11 (Rootless ASGI 3.0 / Uvicorn / Standard Library BaseHTTP)  
+**Container:** Docker multi-stage rootless container (`appuser`: UID 10001)  
+**Status:** Beta V-001 Verified Staging Readiness (`DEPLOYMENT CONDITIONALLY VERIFIED`)
 
 ---
 
-## 2. Repository Layout
+## 1. Overview & Mission
+
+`peregrine-central-ai` is the centralized AI runtime API and intelligence routing engine for the **Peregrine Arabic AI** ecosystem. It acts as the unified backend brain serving:
+
+1. **Arabic Digital Reader (`arabic.peregrineacademy.in`):** Interactive AI Tutor dialogue (Rashid & Maryam), curriculum RAG, and pronunciation error tracking.
+2. **Peregrine Arabic AI Web Platform (`ai.peregrineacademy.in`):** Research Notebooks, Nahw/Sarf grammar analysis, Balagha rhetoric, and dialect studies.
+3. **AI Speaking Partner:** Roleplay conversation practice in authentic Emirati, Levantine, Egyptian, and Modern Standard Arabic.
+4. **Examination & Assessment Assistant:** Step-by-step exam question explanation, distractor justification, and rubric grading.
 
 ```
+       ┌──────────────────────────┐    ┌──────────────────────────┐    ┌──────────────────────────┐
+       │   Arabic Digital Reader  │    │   Research Web App (MVP) │    │  Exams & Assessment App  │
+       │ arabic.peregrineacademy  │    │   ai.peregrineacademy    │    │  exams.peregrineacademy  │
+       └────────────┬─────────────┘    └────────────┬─────────────┘    └────────────┬─────────────┘
+                    │                               │                               │
+                    └───────────────────────┬───────┴───────────────────────────────┘
+                                            │ HTTPS (Bearer Token / x-request-id)
+                                            ▼
+                       ┌─────────────────────────────────────────┐
+                       │    Cloudflare Gateway Worker (Edge)     │
+                       │       api.ai.peregrineacademy.in        │
+                       │    (25s Shield / 60 RPM Rate Limit)     │
+                       └────────────────────┬────────────────────┘
+                                            │
+                                            ▼
+                       ┌─────────────────────────────────────────┐
+                       │     Peregrine Central AI API Runtime    │
+                       │          (Koyeb / Cloud Run)            │
+                       │   ASGI 3.0 App / Pure Python 3.11       │
+                       └────────────────────┬────────────────────┘
+                                            │
+               ┌────────────────────────────┼────────────────────────────┐
+               ▼                            ▼                            ▼
+  ┌────────────────────────┐   ┌────────────────────────┐   ┌────────────────────────┐
+  │   Cloud Remote LLMs    │   │ Local Model Adapters   │   │ In-Memory Knowledge    │
+  │   - Groq (LPU Whisper) │   │ - Ollama (Qwen 3:4B)   │   │ - Arabic RAG Engine    │
+  │   - Hosted Allam 2:7B  │   │ - Apple Silicon MLX    │   │ - Student MAG Memory   │
+  │   - DeepSeek / OpenAI  │   │ - Deterministic Mock   │   │ - Morphological NLP    │
+  └────────────────────────┘   └────────────────────────┘   └────────────────────────┘
+```
+
+---
+
+## 2. Key Architecture & Features
+
+### A. Zero-Dependency High-Throughput ASGI 3.0 Engine
+- Implemented as a native ASGI 3.0 application in [`central_runtime_api/asgi.py`](central_runtime_api/asgi.py) with full lifespan protocol (`lifespan.startup`, `lifespan.shutdown`).
+- Benchmarked under concurrency: **36.97 MB RAM** under 100 concurrent requests (ideal for zero-cost 512 MB hosting like Koyeb Nano).
+- Fallback standalone HTTP server in [`central_runtime_api/server.py`](central_runtime_api/server.py) using standard Python library (`http.server.ThreadingHTTPServer`).
+
+### B. Resilient Provider & Fallback Architecture
+- **Hosted Adapter:** OpenAI-compatible remote provider for Groq, DeepSeek, vLLM, or hosted Allam.
+- **Ollama Adapter:** Local inference with strict `<think>` tag reasoning trace isolation.
+- **MLX Jais Adapter:** Apple Silicon hardware-accelerated Arabic bilingual model execution.
+- **Mock Adapter:** Offline, deterministic testing adapter that simulates realistic latency and outputs with zero GPU usage or external network dependencies.
+- **Sequential Concurrency Lock & Provider Fallback:** Protects small memory instances from crashing while automatically routing to the fallback engine if the primary fails.
+
+### C. Knowledge Core: In-Memory Arabic RAG & MAG
+- **Arabic RAG (`knowledge_core/arabic_rag.py`):** BM25 exact and semantic retriever with citation verification and diacritic invariance.
+- **Arabic MAG (`knowledge_core/arabic_mag.py`):** Spaced-repetition Student Memory Graph tracking pronunciation errors, mastery graduation, and rolling turns.
+- **Morphological NLP (`knowledge_core/arabic_nlp.py`):** Diacritics stripping, Alef/Teh Marbuta normalization, and morphological stem lookup.
+
+### D. Security, Privacy & Consent
+- **Timing-Safe Auth:** Authorization tokens verified using `hmac.compare_digest`.
+- **DoS Guard:** Enforced request body limits (`CENTRAL_AI_MAX_BODY_BYTES`, default 2 MB).
+- **Exact CORS Matching:** Prevents wildcard CORS leaks in production.
+- **PII Redaction & Anonymization:** In-flight stripping of email, phone, and civil IDs; deterministic SHA-256 user hashing.
+- **GDPR Consent Withdrawal:** `/api/v1/feedback/consent/withdraw` endpoint purges all candidate and training records for the given student hash.
+
+---
+
+## 3. API Endpoints Reference
+
+All inference and feedback endpoints require `Authorization: Bearer <CENTRAL_AI_API_KEY>` in staging/production.
+
+| Method | Endpoint | Description | Auth Required? |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/health` | Liveness probe reporting version, active provider, and model | No |
+| `GET` | `/ready` | Readiness probe checking disk space, memory, and feedback queue | No |
+| `POST` | `/api/v1/chat` | General-purpose multi-turn chat completion | **Yes** |
+| `POST` | `/api/v1/tutor/explain` | Specialized Arabic grammar, morphology, or rhetoric explanation | **Yes** |
+| `POST` | `/api/v1/speaking/respond` | Authentic dialect dialogue partner (Rashid & Maryam) | **Yes** |
+| `POST` | `/api/v1/exams/explain` | Assessment analysis, correct answer justification, distractor review | **Yes** |
+| `POST` | `/api/v1/feedback` | Continuous learning telemetry & user feedback logging | **Yes** |
+| `POST` | `/api/v1/feedback/consent/withdraw` | Immediate user consent withdrawal and data purge | **Yes** |
+
+---
+
+## 4. Repository Structure
+
+```text
 peregrine-central-ai/
-├── central_runtime_api/           # The canonical Central AI Runtime ASGI/HTTP API server
-│   ├── adapters/                  # Model adapters: Base, Hosted (Groq/OpenAI), Ollama, MLX Jais, Mock
-│   │   ├── base.py
-│   │   ├── hosted_adapter.py      # OpenAI-compatible / Groq Llama 3.3 70B adapter
-│   │   ├── mlx_adapter.py         # Apple Silicon MLX local inference adapter
-│   │   ├── mock_adapter.py        # Zero-credential test & fallback adapter
-│   │   └── ollama_adapter.py      # Local Ollama runner adapter
-│   ├── middleware/                # Security & operational middleware
-│   │   ├── privacy.py             # PII masking & GDPR/privacy consent enforcer
-│   │   └── rate_limiter.py        # Token-bucket sliding window rate limiter
-│   ├── services/                  # Business logic services
-│   │   ├── feedback_store.py      # User feedback & consent database
-│   │   ├── provider_manager.py    # Active/fallback inference provider router
-│   │   └── router.py              # Endpoint request validation & handlers
-│   ├── workers/                   # Background tasks
-│   │   └── feedback_worker.py     # Asynchronous continuous learning aggregation worker
-│   ├── asgi.py                    # Production ASGI application entrypoint
-│   ├── server.py                  # Standalone HTTP server & handler
-│   ├── config.py                  # Central configuration & disk guard
-│   ├── schemas.py                 # Pydantic request/response data models
-│   ├── health_check.py            # Detailed diagnostic health checker
-│   ├── run.py                     # CLI launcher
-│   └── test_api.py                # In-process API integration tests
-├── knowledge_core/                # Arabic RAG, MAG, and NLP core engine
-│   ├── arabic_mag.py              # Multi-Agent Generator (Arabic dialect & grammar specialist)
-│   ├── arabic_nlp.py              # Arabic NLP pre/post-processing & normalization
-│   ├── arabic_rag.py              # Retrieval Augmented Generation engine
-│   ├── embeddings.py              # Text embedding generation (Deterministic & Provider)
-│   └── vector_store.py            # Vector similarity store with category filtering
-├── specialist_tools/              # Specialist Arabic NLP tools & services
-│   ├── pyarud_service.py          # Prosody & poetic meter analyzer service
-│   ├── test_pyarud_service.py
-│   ├── test_camel_tools.py
-│   ├── test_mishkal.py
-│   ├── test_pyarabic.py
-│   ├── test_qalsadi.py
-│   ├── test_qutrub.py
-│   ├── verify_pyarud_full.py
-│   └── run_all_nlp_tests.py
-├── reference/                     # Historical / reference implementations
-│   └── khaliji-chat.js            # Battle-tested Speaking Partner Vercel serverless function (Groq/Whisper)
-├── tests/                         # Complete test suite
-│   ├── test_central_api.py        # HTTP server & runtime integration tests
-│   ├── test_rag_mag.py            # Arabic RAG/MAG linguistic intelligence tests
-│   ├── test_arabic_specialist_deterministic.py  # Deterministic Arabic NLP tests
-│   ├── test_cloud_container_readiness.py        # ASGI container readiness tests
-│   ├── test_qa_suite.py           # Comprehensive QA test harness
-│   ├── test_runners.py            # Test orchestration runner
-│   └── staging_smoke_test.py      # Staging environment smoke tests
-├── docs/                          # Architecture specs, capability matrices, deployment guides
-│   ├── EXISTING_AI_CAPABILITY_INVENTORY.md
-│   ├── BETA_V001_CENTRAL_AI_API.md
-│   ├── BETA_V001_CENTRAL_API_DEPLOYMENT_READINESS.md
-│   ├── BETA_V001_CLOUD_HOSTING_ARCHITECTURE.md
-│   ├── BETA_V001_CLOUDFLARE_GATEWAY_SECURITY_AUDIT.md
-│   ├── BETA_V001_SPEAKING_PARTNER_DESIGN.md
-│   ├── BETA_V001_API_QA_PLAN.md
-│   ├── BETA_V001_API_QA_RESULTS.md
-│   ├── BETA_V001_ARABIC_CAPABILITY_MATRIX.md
-│   ├── BETA_V001_ARABIC_DATA_SCHEMA.md
-│   ├── BETA_V001_ARABIC_LEARNING_PIPELINE.md
-│   ├── BETA_V001_CLOUD_INTEGRATION_TEST_PLAN.md
-│   ├── BETA_V001_DEPLOYMENT_RUNBOOK.md
-│   ├── BETA_V001_FINAL_FREE_DEMO_ARCHITECTURE.md
-│   ├── BETA_V001_MODEL_PROVIDER_STATUS.md
-│   ├── BETA_V001_ZERO_COST_BETA_IMPLEMENTATION_PLAN.md
-│   ├── BETA_V001_ZERO_COST_DEPLOYMENT_RECOMMENDATION.md
-│   ├── CENTRAL_API_CLOUD_DEPLOYMENT_AUDIT.md
-│   └── CLOUDFLARE_WORKER_CENTRAL_API_COMPATIBILITY.md
-├── Dockerfile                     # Cloud container deployment Dockerfile
-├── docker-compose.yml             # Local / staging docker-compose definition
-├── requirements.txt               # Base Python requirements (Fast, zero-heavy-deps)
-├── requirements-specialist.txt    # Specialist Arabic NLP requirements (PyArabic, Mishkal, Qalsadi, etc.)
-└── .env.example                   # Sanitized environment template (no real keys)
+├── central_runtime_api/          # Core Central AI runtime application package
+│   ├── adapters/                 # Model provider adapters (hosted, ollama, mlx, mock)
+│   ├── middleware/               # Rate limiting, PII sanitization, user anonymization
+│   ├── services/                 # Provider manager, router, continuous learning store
+│   ├── workers/                  # Background feedback ingestion & queue flusher
+│   ├── asgi.py                   # Pure ASGI 3.0 application entrypoint
+│   ├── config.py                 # Configuration loader & environment variables
+│   ├── health_check.py           # Automated health check CLI probe script
+│   ├── run.py                    # Server launcher supporting ASGI / uvicorn / http
+│   ├── schemas.py                # Pydantic / dataclass request & response contracts
+│   ├── server.py                 # Standalone BaseHTTPRequestHandler server
+│   └── test_api.py               # Package-level unit tests
+├── knowledge_core/               # Arabic RAG, MAG, and NLP modules
+│   ├── arabic_mag.py             # Memory Augmented Generation (student error graph)
+│   ├── arabic_nlp.py             # Text normalization, diacritics stripping, stemming
+│   ├── arabic_rag.py             # Retrieval Augmented Generation & heritage corpus
+│   ├── embeddings.py             # Deterministic & provider embedding interfaces
+│   └── vector_store.py           # In-memory cosine similarity vector index
+├── specialist_tools/             # Arabic specialist services (PyArud prosody, NLP)
+│   ├── pyarud_service.py         # Subprocess wrapper for Arabic poetic meter/rhyme
+│   └── test_*.py                 # Specialist linguistic regression tests
+├── benchmarks/                   # Audit benchmark specifications & schemas
+├── tests/                        # Automated QA and readiness test suites
+│   ├── test_cloud_container_readiness.py  # 15 container readiness & CORS tests
+│   ├── test_qa_suite.py                   # 36 comprehensive QA mission tests
+│   ├── test_central_api.py                # 17 API endpoint unit tests
+│   ├── test_rag_mag.py                    # 15 RAG & MAG infrastructure tests
+│   ├── staging_smoke_test.py              # 7 staging deployment smoke gates
+│   └── test_runners.py                    # 13 benchmark runner verification tests
+├── scripts/                      # Operational automation scripts
+│   ├── health_check.py           # Standalone HTTP probe
+│   ├── run_qa_suite.py           # QA suite runner
+│   └── run_staging_smoke_test.py # Smoke test runner
+├── sdk/                          # Client SDKs for frontend integration
+│   └── ts/central-api-client.ts  # TypeScript client adapter for Next.js & Reader
+├── docs/                         # Architecture specifications, runbooks, and audits
+├── Dockerfile                    # Production rootless multi-stage Dockerfile
+├── docker-compose.yml            # Local & staging container composition
+├── requirements.txt              # Production Python dependencies
+├── .env.example                  # Sanitized environment configuration template
+├── .gitignore                    # Git exclusions (no secrets, venvs, or databases)
+└── README.md                     # Master documentation
 ```
 
 ---
 
-## 3. Core API Endpoints
-
-All responses conform to the unified `CentralAPIResponse` schema:
-
-| Endpoint | Method | Purpose | Key Parameters |
-|---|---|---|---|
-| `/health` | `GET` | Container liveness check | None |
-| `/ready` | `GET` | Readiness & storage capacity check | None |
-| `/api/v1/chat` | `POST` | General Arabic conversational assistant | `messages`, `parameters`, `user_id` |
-| `/api/v1/tutor/explain` | `POST` | Grammar, I'rab, morphology, syntax explanation | `concept_or_text`, `level`, `focus_area` |
-| `/api/v1/speaking/respond`| `POST` | Speaking Partner (Rashid/Maryam, Emirati/MSA) | `user_utterance`, `scenario`, `dialect`, `history` |
-| `/api/v1/exams/explain` | `POST` | Assessment distracter & rationale analysis | `question`, `options`, `correct_answer`, `user_answer` |
-| `/api/v1/feedback` | `POST` | User feedback & opt-in continuous learning data | `category`, `rating`, `user_consent` |
-| `/api/v1/feedback/consent/withdraw` | `POST` | Instant user data purge & consent withdrawal | `user_id` |
-
-### Sample Response Contract
-```json
-{
-  "content": "مرحباً بك! أنا راشد، شريكك في التدرب على اللهجة الإماراتية...",
-  "model": "llama-3.3-70b-versatile",
-  "provider": "hosted",
-  "finish_reason": "stop",
-  "usage": {
-    "prompt_tokens": 124,
-    "completion_tokens": 58,
-    "total_tokens": 182
-  },
-  "latency_ms": 312.4,
-  "request_id": "req-9b8c2d1e-7f4a",
-  "metadata": {
-    "dialect": "emirati",
-    "persona": "rashid"
-  }
-}
-```
-
----
-
-## 4. Inference Providers & Fallback Hierarchy
-
-Peregrine Central AI uses a decoupled provider architecture:
-
-1. **`hosted` (Primary Cloud Provider)**:
-   - High-throughput OpenAI-compatible endpoint (Groq Llama 3.3 70B, vLLM, RunPod).
-   - Low latency (~300–600ms) for real-time Speaking Partner dialogues.
-2. **`mlx_jais` (Apple Silicon Hardware Acceleration)**:
-   - Optimized for local development and private on-premise execution using Apple Metal Performance Shaders.
-3. **`ollama` (Local Model Runner)**:
-   - Local CPU/GPU fallback running Qwen 2.5 / 3.
-4. **`mock` (Deterministic Zero-Cost Engine)**:
-   - Provides deterministic, syntactically valid Arabic responses for automated CI/CD testing, integration verification, and zero-cost local sandboxing without external credentials.
-
-Automatic fallback kicks in seamlessly when the primary provider encounters network partition, rate limits, or timeout thresholds.
-
----
-
-## 5. Quickstart & Local Execution
+## 5. Local Setup & Testing
 
 ### Prerequisites
 - Python 3.11+
-- pip
+- Virtual environment recommended
 
-### 1. Install Dependencies
+### Installation
 ```bash
-# Core API dependencies
+python3.11 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-# (Optional) Specialist Arabic NLP toolchain
-pip install -r requirements-specialist.txt
 ```
 
-### 2. Configure Environment
+### Running Tests
+All test suites can be executed offline in mock mode without paid credentials:
+
 ```bash
-cp .env.example .env
-# Edit .env with your specific provider settings
+# 1. Cloud Container & ASGI Readiness (15 tests)
+python3 -m unittest tests/test_cloud_container_readiness.py
+
+# 2. Knowledge Core RAG & MAG Infrastructure (15 tests)
+python3 -m unittest tests/test_rag_mag.py
+
+# 3. Benchmark Runners Verification (13 tests)
+python3 -m unittest tests/test_runners.py
+
+# 4. Comprehensive QA Mission Suite (36 tests)
+python3 -m unittest tests/test_qa_suite.py
 ```
 
-### 3. Launch Server
+### Running the API Server Locally
 ```bash
-# Using ASGI (Uvicorn - recommended for production)
-python3 -m central_runtime_api.run --server asgi --host 0.0.0.0 --port 8000
+# Launch with high-performance ASGI server (uvicorn)
+python3 -m central_runtime_api.run --host 0.0.0.0 --port 8000 --server asgi
 
-# Or using built-in standalone HTTP server
-python3 -m central_runtime_api.run --server http --host 0.0.0.0 --port 8000
+# Or launch with native standard library server
+python3 -m central_runtime_api.run --host 0.0.0.0 --port 8000 --server http
 ```
 
-### 4. Verify Health & Readiness
+### Probing the Health Endpoint
 ```bash
-curl -s http://127.0.0.1:8000/health | jq .
-curl -s http://127.0.0.1:8000/ready | jq .
+curl -i http://localhost:8000/health
+curl -i http://localhost:8000/ready
 ```
 
 ---
 
-## 6. Docker Container Deployment
-
-The repository includes an enterprise-ready, rootless, multi-stage Docker build:
+## 6. Docker & Container Deployment
 
 ### Build Container
 ```bash
 docker build -t peregrine-central-ai:latest .
 ```
 
-### Run Container
-```bash
-docker run -d \
-  --name peregrine-central-ai \
-  -p 8000:8000 \
-  -e CENTRAL_AI_PROVIDER=mock \
-  -e CENTRAL_AI_ENV=production \
-  -v peregrine_ai_data:/app/data \
-  peregrine-central-ai:latest
-```
-
 ### Run with Docker Compose
 ```bash
-docker-compose up -d
-docker-compose logs -f central-ai-api
+docker compose up -d
 ```
 
----
-
-## 7. Running the Test Suites
-
-All tests are designed to execute reproducibly without requiring live credentials:
-
-```bash
-# 1. Cloud Container Readiness & ASGI In-Memory Suite (15 tests)
-python3 -m unittest tests/test_cloud_container_readiness.py
-
-# 2. Runtime API Socket & HTTP Lifecycle Suite (17 tests)
-CENTRAL_AI_ENFORCE_DISK_LIMIT=false python3 -m unittest tests/test_central_api.py
-
-# 3. Arabic RAG, MAG, & Vector Store Suite (15 tests)
-CENTRAL_AI_ENFORCE_DISK_LIMIT=false python3 -m unittest tests/test_rag_mag.py
-
-# 4. Specialist Arabic NLP Deterministic Suite
-python3 -m unittest tests/test_arabic_specialist_deterministic.py
-```
+### Cloud Run / Koyeb Notes
+- **Ephemeral SSD Caution:** On hosting platforms with small root disks (e.g. Koyeb 2 GB SSD), set `CENTRAL_AI_MIN_DISK_FREE_GB=0.5` in the environment to avoid triggering the default 15 GB safety abort.
+- **Port:** The container listens on port `8000` by default. Override via `CENTRAL_AI_PORT` or `PORT`.
 
 ---
 
-## 8. Security & Data Protection Guarantees
+## 7. Security & Credentials Policy
 
-- **Zero Hardcoded Secrets**: All credentials and API keys are injected strictly via environment variables.
-- **GDPR & Privacy Compliance**:
-  - PII (emails, phone numbers, identifiers) is automatically masked by `central_runtime_api/middleware/privacy.py`.
-  - Continuous learning ingestion is strictly opt-in (`user_consent: true`).
-  - `POST /api/v1/feedback/consent/withdraw` guarantees atomic removal of user contributions from learning queues.
-- **Rootless Container Execution**: The production Docker image runs as an unprivileged service user (`appuser: UID 10001`).
-- **Disk Saturation Guard**: Storage safety thresholds prevent unmonitored disk exhaustion in high-concurrency environments.
+* **Strictly Zero Secrets:** No API keys, passwords, database URLs, or private tokens are stored in this repository.
+* **Environment Variables:** All secrets are injected at runtime via environment variables (see [`.env.example`](.env.example)).
+* **Timing-Safe Auth:** Endpoint access uses constant-time string comparisons to prevent timing attacks.
+* **PII Anonymization:** Student identifiers are salted and hashed with SHA-256 before telemetry storage.
 
 ---
-
-## 9. License
-
-Proprietary and Confidential.  
-Copyright © 2026 Peregrine Academy / Peregrine Hub. All rights reserved.
+*Maintained by the Peregrine Arabic AI Infrastructure & Backend Engineering Team.*
